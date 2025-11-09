@@ -14,6 +14,9 @@ enable_testing()
 # Make our pstsdk/ subdirectory available for headers.
 include_directories("${PROJECT_SOURCE_DIR}")
 
+# Export compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Set up our compiler flags.
 if(MSVC)
   set(CMAKE_CXX_FLAGS "/DPSTSDK_VALIDATION_LEVEL_FULL /EHsc /nologo /W4 /WX")
@@ -49,3 +52,11 @@ file(GLOB pstsdk_pst_headers pstsdk/pst/*.h)
 install(FILES ${pstsdk_pst_headers} DESTINATION include/pstsdk/pst)
 file(GLOB pstsdk_toplevel_headers pstsdk/*.h)
 install(FILES ${pstsdk_toplevel_headers} DESTINATION include/pstsdk)
+
+# Custom target to generate compile_commands.json for headers using compdb
+add_custom_target(compdb
+    COMMAND compdb -p ${CMAKE_BINARY_DIR} list > ${PROJECT_SOURCE_DIR}/compile_commands.json
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Generating compile_commands.json with compdb"
+    VERBATIM
+)
