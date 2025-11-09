@@ -17,8 +17,9 @@ include_directories("${PROJECT_SOURCE_DIR}")
 # Set up our compiler flags.
 if(MSVC)
   set(CMAKE_CXX_FLAGS "/DPSTSDK_VALIDATION_LEVEL_FULL /EHsc /nologo /W4 /WX")
-elseif(CMAKE_COMPILER_IS_GNUCC)
-  set(CMAKE_CXX_FLAGS "-Wall -Werror -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x")
+else()
+  # https://clang.llvm.org/docs/DiagnosticsReference.html#wincompatible-ms-struct 
+  set(CMAKE_CXX_FLAGS "-Wall -Wno-error=incompatible-ms-struct -g -DPSTSDK_VALIDATION_LEVEL_FULL -std=c++0x")
 endif()
 
 # Make sure we have Boost.
