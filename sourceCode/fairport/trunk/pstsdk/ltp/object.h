@@ -14,12 +14,7 @@
 #define PSTSDK_LTP_OBJECT_H
 
 #include <functional>
-#ifdef __GNUC__
-#include <tr1/type_traits>
-#include <tr1/functional>
-#else
 #include <type_traits>
-#endif
 #include <algorithm>
 #include <boost/iostreams/concepts.hpp>
 #ifdef _MSC_VER
@@ -182,7 +177,7 @@ inline T pstsdk::const_property_object::read_prop(prop_id id) const
 #ifdef _MSC_VER
 #pragma warning(suppress:4127)
 #endif
-    if(!std::tr1::is_pod<T>::value)
+    if(!std::is_pod<T>::value)
         throw std::invalid_argument("T must be a POD or one of the specialized classes");
 
     if(sizeof(T) == sizeof(ulonglong))
@@ -218,7 +213,7 @@ inline std::vector<T> pstsdk::const_property_object::read_prop_array(prop_id id)
 #ifdef _MSC_VER
 #pragma warning(suppress:4127)
 #endif
-    if(!std::tr1::is_pod<T>::value)
+    if(!std::is_pod<T>::value)
         throw std::invalid_argument("T must be a POD or one of the specialized classes");
 
     std::vector<byte> buffer = get_value_variable(id); 
@@ -237,11 +232,11 @@ inline bool const_property_object::read_prop<bool>(prop_id id) const
 template<>
 inline std::vector<bool> pstsdk::const_property_object::read_prop_array<bool>(prop_id id) const
 {
-    using namespace std::tr1::placeholders;
+    using namespace std::placeholders;
 
     std::vector<ulong> values = read_prop_array<ulong>(id);
     std::vector<bool> results(values.size());
-    std::transform(values.begin(), values.end(), results.begin(), std::tr1::bind(std::not_equal_to<ulong>(), 0, _1));
+    std::transform(values.begin(), values.end(), results.begin(), std::bind(std::not_equal_to<ulong>(), 0, _1));
     return results;
 }
 

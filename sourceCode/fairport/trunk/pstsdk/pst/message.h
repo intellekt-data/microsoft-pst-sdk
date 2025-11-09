@@ -122,7 +122,7 @@ inline std::ostream& operator<<(std::ostream& out, const attachment& attach)
 //!
 //! Used by the boost iterator library to provide iterators over attachment objects
 //! \ingroup pst_messagerelated
-class attachment_transform : public std::unary_function<const_table_row, attachment>
+class attachment_transform
 {
 public:
     //! \brief Construct the transform object
@@ -140,6 +140,9 @@ public:
     //! \returns An attachment object
     attachment operator()(const const_table_row& row) const
         { return attachment(property_bag(m_node.lookup(row.get_row_id()))); }
+
+    attachment_transform(const attachment_transform& other)
+        : m_node(other.m_node) { }
 
 private:
     node m_node;
@@ -204,7 +207,7 @@ private:
 //!
 //! Used by the boost iterator library to provide iterators over recipient objects
 //! \ingroup pst_messagerelated
-struct recipient_transform : public std::unary_function<const_table_row, recipient>
+struct recipient_transform
 {
     recipient operator()(const_table_row row) const
         { return recipient(row); }
@@ -350,11 +353,11 @@ private:
     message& operator=(const message&); // = delete
 
     property_bag m_bag;
-    mutable std::tr1::shared_ptr<table> m_attachment_table;
-    mutable std::tr1::shared_ptr<table> m_recipient_table;
+    mutable std::shared_ptr<table> m_attachment_table;
+    mutable std::shared_ptr<table> m_recipient_table;
 };
 
-class message_transform_row : public std::unary_function<const_table_row, message>
+class message_transform_row
 {
 public:
     message_transform_row(const shared_db_ptr& db) 
@@ -366,7 +369,7 @@ private:
     shared_db_ptr m_db;
 };
 
-class message_transform_info : public std::unary_function<node_info, message>
+class message_transform_info
 {
 public:
     message_transform_info(const shared_db_ptr& db) 

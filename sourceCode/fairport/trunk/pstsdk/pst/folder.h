@@ -128,7 +128,7 @@ public:
 private:
     shared_db_ptr m_db;
     property_bag m_bag;
-    mutable std::tr1::shared_ptr<table> m_contents_table;
+    mutable std::shared_ptr<table> m_contents_table;
 };
 
 //! \brief Defines a transform from a row of a hierarchy table to a search_folder
@@ -136,7 +136,7 @@ private:
 //! Used by the boost iterator library to provide friendly iterators over
 //! search_folders
 //! \ingroup pst_folderrelated
-class search_folder_transform_row : public std::unary_function<const_table_row, search_folder>
+class search_folder_transform_row
 {
 public:
     //! \brief Construct a search_folder_transform object
@@ -158,7 +158,7 @@ class folder;
 //!
 //! Used by the boost iterator library to provide iterators over folder objects
 //! \ingroup pst_folderrelated
-class folder_transform_row : public std::unary_function<const_table_row, folder>
+class folder_transform_row
 {
 public:
     //! \brief Construct a folder_transform_row object
@@ -308,16 +308,16 @@ public:
 private:
     shared_db_ptr m_db;
     property_bag m_bag;
-    mutable std::tr1::shared_ptr<table> m_contents_table;
-    mutable std::tr1::shared_ptr<table> m_associated_contents_table;
-    mutable std::tr1::shared_ptr<table> m_hierarchy_table;
+    mutable std::shared_ptr<table> m_contents_table;
+    mutable std::shared_ptr<table> m_associated_contents_table;
+    mutable std::shared_ptr<table> m_hierarchy_table;
 };
 
 //! \brief Defines a transform from a node_info to a folder
 //!
 //! Used by the boost iterator library to provide iterators over folder objects
 //! \ingroup pst_folderrelated
-class folder_transform_info : public std::unary_function<node_info, folder>
+class folder_transform_info
 {
 public:
     //! \brief Construct a folder_transform_info object
@@ -376,7 +376,7 @@ inline pstsdk::table& pstsdk::search_folder::get_contents_table()
 namespace compiler_workarounds
 {
 
-struct folder_name_equal : public std::unary_function<bool, const pstsdk::folder&>
+struct folder_name_equal
 {
     folder_name_equal(const std::wstring& name) : m_name(name) { }
     bool operator()(const pstsdk::folder& f) const { return f.get_name() == m_name; }
